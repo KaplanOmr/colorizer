@@ -25,6 +25,18 @@ const (
 )
 
 const (
+	//ANSI code variables for background.
+	BG_BLACK = iota + 30
+	BG_RED
+	BG_GREEN
+	BG_YELLOW
+	BG_BLUE
+	BG_MAGENTA
+	BG_CYAN
+	BG_WHITE
+)
+
+const (
 	//ANSI code with a placeholder.
 	_ANSI = "\033[{ARGS}m"
 
