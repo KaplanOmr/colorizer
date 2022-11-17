@@ -26,7 +26,7 @@ const (
 
 const (
 	//ANSI code variables for background.
-	BG_BLACK = iota + 30
+	BG_BLACK = iota + 40
 	BG_RED
 	BG_GREEN
 	BG_YELLOW
@@ -45,15 +45,15 @@ const (
 )
 
 //New, creates colorizer and returns colored text.
-func New(text string, color int) string {
+func New(text string, options ...int) string {
 	var c Colorizer
 
-	return c.Make(text, color)
+	return c.Make(text, options)
 }
 
 //Make, calls generateTemplate and generateText func with given parameters and then returns colored text.
-func (c *Colorizer) Make(text string, color int) string {
-	c.generateTemplate(color)
+func (c *Colorizer) Make(text string, options []int) string {
+	c.generateTemplate(c.combineOptions(options))
 	c.generateText(text)
 
 	return c.Text
@@ -65,8 +65,8 @@ func (c *Colorizer) generateANSI(args string) string {
 }
 
 //generateTemplate, generates ANSI codes for color and reset.
-func (c *Colorizer) generateTemplate(color int) {
-	colorANSI := c.generateANSI(strconv.Itoa(color))
+func (c *Colorizer) generateTemplate(options string) {
+	colorANSI := c.generateANSI(options)
 	resetANSI := c.generateANSI(strconv.Itoa(RESET))
 	c.Template = fmt.Sprintf("%s{TEXT}%s", colorANSI, resetANSI)
 }
@@ -74,4 +74,9 @@ func (c *Colorizer) generateTemplate(color int) {
 //generateText, generates colored text with template.
 func (c *Colorizer) generateText(text string) {
 	c.Text = strings.Replace(c.Template, "{TEXT}", text, 1)
+}
+
+//combineOptions, combine options with separator, and prepares for ANSI code.
+func (c *Colorizer) combineOptions(options []int) string {
+	return strings.Trim(strings.Replace(fmt.Sprint(options), " ", ";", -1), "[]")
 }
