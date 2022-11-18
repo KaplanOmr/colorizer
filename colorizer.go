@@ -51,9 +51,25 @@ func New(text string, options ...int) string {
 	return c.Make(text, options)
 }
 
+//NewTemplate, generate colorizer with given options and returns generated colorizer.
+func NewTemplate(options ...int) Colorizer {
+	var c Colorizer
+
+	c.generateTemplate(options)
+
+	return c
+}
+
+//NewWithTemplate, generate colored text with the given colorizer.
+func NewWithTemplate(text string, colorizer Colorizer) string {
+	colorizer.generateText(text)
+
+	return colorizer.Text
+}
+
 //Make, calls generateTemplate and generateText func with given parameters and then returns colored text.
 func (c *Colorizer) Make(text string, options []int) string {
-	c.generateTemplate(c.combineOptions(options))
+	c.generateTemplate(options)
 	c.generateText(text)
 
 	return c.Text
@@ -65,8 +81,8 @@ func (c *Colorizer) generateANSI(args string) string {
 }
 
 //generateTemplate, generates ANSI codes for color and reset.
-func (c *Colorizer) generateTemplate(options string) {
-	colorANSI := c.generateANSI(options)
+func (c *Colorizer) generateTemplate(options []int) {
+	colorANSI := c.generateANSI(c.combineOptions(options))
 	resetANSI := c.generateANSI(strconv.Itoa(RESET))
 	c.Template = fmt.Sprintf("%s{TEXT}%s", colorANSI, resetANSI)
 }
