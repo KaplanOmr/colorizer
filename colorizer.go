@@ -6,14 +6,15 @@ import (
 	"strings"
 )
 
-//Main struct has Text and Template. Firstly creates a Template and then creates colored Text.
+// Colorizer struct represents a text colorizer with a template and text.
+// It allows you to create colored text using ANSI color codes.
 type Colorizer struct {
 	Template string
 	Text     string
 }
 
+// ANSI color code constants
 const (
-	//ANSI code variables for color.
 	BLACK = iota + 30
 	RED
 	GREEN
@@ -24,8 +25,8 @@ const (
 	WHITE
 )
 
+// ANSI background color code constants
 const (
-	//ANSI code variables for background.
 	BG_BLACK = iota + 40
 	BG_RED
 	BG_GREEN
@@ -36,63 +37,56 @@ const (
 	BG_WHITE
 )
 
-const (
-	//ANSI code with a placeholder.
-	_ANSI = "\033[{ARGS}m"
+// ANSI code with a placeholder for color formatting
+const _ANSI = "\033[{ARGS}m"
 
-	//Value of reset of ANSI code.
-	RESET = 0
-)
+// RESET is the value of the ANSI code to reset colors
+const RESET = 0
 
-//New, creates colorizer and returns colored text.
+// New creates a Colorizer and returns colored text with the given options.
 func New(text string, options ...int) string {
 	var c Colorizer
-
 	return c.Make(text, options)
 }
 
-//NewTemplate, generate colorizer with given options and returns generated colorizer.
+// NewTemplate generates a Colorizer with the given options and returns it.
 func NewTemplate(options ...int) Colorizer {
 	var c Colorizer
-
 	c.generateTemplate(options)
-
 	return c
 }
 
-//NewWithTemplate, generate colored text with the given colorizer.
+// NewWithTemplate generates colored text using the provided Colorizer.
 func NewWithTemplate(text string, colorizer Colorizer) string {
 	colorizer.generateText(text)
-
 	return colorizer.Text
 }
 
-//Make, calls generateTemplate and generateText func with given parameters and then returns colored text.
+// Make calls generateTemplate and generateText with the given parameters and returns colored text.
 func (c *Colorizer) Make(text string, options []int) string {
 	c.generateTemplate(options)
 	c.generateText(text)
-
 	return c.Text
 }
 
-//generateANSI, generates ANSI code with given param.
+// generateANSI generates ANSI code with the given arguments.
 func (c *Colorizer) generateANSI(args string) string {
 	return strings.Replace(_ANSI, "{ARGS}", args, 1)
 }
 
-//generateTemplate, generates ANSI codes for color and reset.
+// generateTemplate generates ANSI codes for color and reset based on the provided options.
 func (c *Colorizer) generateTemplate(options []int) {
 	colorANSI := c.generateANSI(c.combineOptions(options))
 	resetANSI := c.generateANSI(strconv.Itoa(RESET))
 	c.Template = fmt.Sprintf("%s{TEXT}%s", colorANSI, resetANSI)
 }
 
-//generateText, generates colored text with template.
+// generateText generates colored text using the template.
 func (c *Colorizer) generateText(text string) {
 	c.Text = strings.Replace(c.Template, "{TEXT}", text, 1)
 }
 
-//combineOptions, combine options with separator, and prepares for ANSI code.
+// combineOptions combines options with a separator and prepares them for ANSI code formatting.
 func (c *Colorizer) combineOptions(options []int) string {
 	return strings.Trim(strings.Replace(fmt.Sprint(options), " ", ";", -1), "[]")
 }
