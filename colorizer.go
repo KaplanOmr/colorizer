@@ -2,7 +2,6 @@ package colorizer
 
 import (
 	"fmt"
-	"strconv"
 	"strings"
 )
 
@@ -19,6 +18,15 @@ const (
 	Magenta
 	Cyan
 	White
+	// Bright/high-intensity colors
+	BrightBlack   Color = iota + 90 - 8 // 90
+	BrightRed                           // 91
+	BrightGreen                         // 92
+	BrightYellow                        // 93
+	BrightBlue                          // 94
+	BrightMagenta                       // 95
+	BrightCyan                          // 96
+	BrightWhite                         // 97
 )
 
 // Background represents an ANSI background color code
@@ -34,6 +42,15 @@ const (
 	BgMagenta
 	BgCyan
 	BgWhite
+	// Bright/high-intensity background colors
+	BgBrightBlack   Background = iota + 100 - 8 // 100
+	BgBrightRed                                 // 101
+	BgBrightGreen                               // 102
+	BgBrightYellow                              // 103
+	BgBrightBlue                                // 104
+	BgBrightMagenta                             // 105
+	BgBrightCyan                                // 106
+	BgBrightWhite                               // 107
 )
 
 // Common text attributes
@@ -94,7 +111,7 @@ func (s *Style) Paint(text string) string {
 	if len(s.colors) == 0 {
 		return text
 	}
-	
+
 	args := strings.Trim(strings.Replace(fmt.Sprint(s.colors), " ", ";", -1), "[]")
 	return fmt.Sprintf(ansiTemplate+"%s"+ansiTemplate, args, text, reset)
 }

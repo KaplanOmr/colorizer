@@ -81,6 +81,16 @@ fmt.Println(errorStyle.Paint("Fatal error occurred!"))
 - `colorizer.Cyan`
 - `colorizer.White`
 
+### Bright Text Colors
+- `colorizer.BrightBlack`
+- `colorizer.BrightRed`
+- `colorizer.BrightGreen`
+- `colorizer.BrightYellow`
+- `colorizer.BrightBlue`
+- `colorizer.BrightMagenta`
+- `colorizer.BrightCyan`
+- `colorizer.BrightWhite`
+
 ### Background Colors
 - `colorizer.BgBlack`
 - `colorizer.BgRed`
@@ -90,6 +100,16 @@ fmt.Println(errorStyle.Paint("Fatal error occurred!"))
 - `colorizer.BgMagenta`
 - `colorizer.BgCyan`
 - `colorizer.BgWhite`
+
+### Bright Background Colors
+- `colorizer.BgBrightBlack`
+- `colorizer.BgBrightRed`
+- `colorizer.BgBrightGreen`
+- `colorizer.BgBrightYellow`
+- `colorizer.BgBrightBlue`
+- `colorizer.BgBrightMagenta`
+- `colorizer.BgBrightCyan`
+- `colorizer.BgBrightWhite`
 
 ### Text Attributes
 - `colorizer.Bold`
