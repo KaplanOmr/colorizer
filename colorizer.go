@@ -6,87 +6,100 @@ import (
 	"strings"
 )
 
-// Colorizer struct represents a text colorizer with a template and text.
-// It allows you to create colored text using ANSI color codes.
-type Colorizer struct {
-	Template string
-	Text     string
-}
+// Color represents an ANSI color code
+type Color int
 
-// ANSI color code constants
+// Define colors as custom type constants for better type safety
 const (
-	BLACK = iota + 30
-	RED
-	GREEN
-	YELLOW
-	BLUE
-	MAGENTA
-	CYAN
-	WHITE
+	Black Color = iota + 30
+	Red
+	Green
+	Yellow
+	Blue
+	Magenta
+	Cyan
+	White
 )
 
-// ANSI background color code constants
+// Background represents an ANSI background color code
+type Background Color
+
+// Define background colors as custom type constants
 const (
-	BG_BLACK = iota + 40
-	BG_RED
-	BG_GREEN
-	BG_YELLOW
-	BG_BLUE
-	BG_MAGENTA
-	BG_CYAN
-	BG_WHITE
+	BgBlack Background = iota + 40
+	BgRed
+	BgGreen
+	BgYellow
+	BgBlue
+	BgMagenta
+	BgCyan
+	BgWhite
 )
 
-// ANSI code with a placeholder for color formatting
-const _ANSI = "\033[{ARGS}m"
+// Common text attributes
+const (
+	Bold      = 1
+	Dim       = 2
+	Italic    = 3
+	Underline = 4
+	Blink     = 5
+)
 
-// RESET is the value of the ANSI code to reset colors
-const RESET = 0
+const (
+	ansiTemplate = "\033[%sm"
+	reset        = "0"
+)
 
-// New creates a Colorizer and returns colored text with the given options.
-func New(text string, options ...int) string {
-	var c Colorizer
-	return c.Make(text, options)
+// Style represents text styling options
+type Style struct {
+	colors []int
 }
 
-// NewTemplate generates a Colorizer with the given options and returns it.
-func NewTemplate(options ...int) Colorizer {
-	var c Colorizer
-	c.generateTemplate(options)
-	return c
+// New creates a new Style with the given color options
+func New(options ...interface{}) *Style {
+	s := &Style{colors: make([]int, 0, len(options))}
+	for _, opt := range options {
+		switch v := opt.(type) {
+		case Color:
+			s.colors = append(s.colors, int(v))
+		case Background:
+			s.colors = append(s.colors, int(v))
+		case int:
+			s.colors = append(s.colors, v)
+		}
+	}
+	return s
 }
 
-// NewWithTemplate generates colored text using the provided Colorizer.
-func NewWithTemplate(text string, colorizer Colorizer) string {
-	colorizer.generateText(text)
-	return colorizer.Text
+// WithColor adds a text color to the style
+func (s *Style) WithColor(c Color) *Style {
+	s.colors = append(s.colors, int(c))
+	return s
 }
 
-// Make calls generateTemplate and generateText with the given parameters and returns colored text.
-func (c *Colorizer) Make(text string, options []int) string {
-	c.generateTemplate(options)
-	c.generateText(text)
-	return c.Text
+// WithBackground adds a background color to the style
+func (s *Style) WithBackground(bg Background) *Style {
+	s.colors = append(s.colors, int(bg))
+	return s
 }
 
-// generateANSI generates ANSI code with the given arguments.
-func (c *Colorizer) generateANSI(args string) string {
-	return strings.Replace(_ANSI, "{ARGS}", args, 1)
+// WithAttribute adds a text attribute to the style
+func (s *Style) WithAttribute(attr int) *Style {
+	s.colors = append(s.colors, attr)
+	return s
 }
 
-// generateTemplate generates ANSI codes for color and reset based on the provided options.
-func (c *Colorizer) generateTemplate(options []int) {
-	colorANSI := c.generateANSI(c.combineOptions(options))
-	resetANSI := c.generateANSI(strconv.Itoa(RESET))
-	c.Template = fmt.Sprintf("%s{TEXT}%s", colorANSI, resetANSI)
+// Paint applies the style to the given text
+func (s *Style) Paint(text string) string {
+	if len(s.colors) == 0 {
+		return text
+	}
+	
+	args := strings.Trim(strings.Replace(fmt.Sprint(s.colors), " ", ";", -1), "[]")
+	return fmt.Sprintf(ansiTemplate+"%s"+ansiTemplate, args, text, reset)
 }
 
-// generateText generates colored text using the template.
-func (c *Colorizer) generateText(text string) {
-	c.Text = strings.Replace(c.Template, "{TEXT}", text, 1)
-}
-
-// combineOptions combines options with a separator and prepares them for ANSI code formatting.
-func (c *Colorizer) combineOptions(options []int) string {
-	return strings.Trim(strings.Replace(fmt.Sprint(options), " ", ";", -1), "[]")
+// Paint is a helper function for quick styling
+func Paint(text string, options ...interface{}) string {
+	return New(options...).Paint(text)
 }
