@@ -1,5 +1,7 @@
 # Colorizer
 
+[![Go Reference](https://pkg.go.dev/badge/github.com/KaplanOmr/colorizer.svg)](https://pkg.go.dev/github.com/KaplanOmr/colorizer)
+
 Colorizer is a Go package that allows you to easily add colored text to your command-line applications using ANSI color codes.
 
 ## Features
