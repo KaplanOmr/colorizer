@@ -2,7 +2,6 @@ package colorizer
 
 import (
 	"fmt"
-	"strconv"
 	"strings"
 )
 
@@ -94,7 +93,7 @@ func (s *Style) Paint(text string) string {
 	if len(s.colors) == 0 {
 		return text
 	}
-	
+
 	args := strings.Trim(strings.Replace(fmt.Sprint(s.colors), " ", ";", -1), "[]")
 	return fmt.Sprintf(ansiTemplate+"%s"+ansiTemplate, args, text, reset)
 }

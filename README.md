@@ -15,7 +15,7 @@ Colorizer is a Go package that allows you to easily add colored text to your com
 You can install the Colorizer package using `go get`:
 
 ```bash
-go get github.com/KaplanOmr/colorizer
+go get github.com/KaplanOmr/colorizer@v1.0.1
 ```
 
 ## Usage
