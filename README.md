@@ -17,7 +17,7 @@ Colorizer is a Go package that allows you to easily add colored text to your com
 You can install the Colorizer package using `go get`:
 
 ```bash
-go get github.com/KaplanOmr/colorizer@v1.0.1
+go get github.com/KaplanOmr/colorizer@v1.1.0
 ```
 
 ## Usage
@@ -35,6 +35,13 @@ import (
 func main() {
 	// Simple color
 	fmt.Println(colorizer.Paint("Error!", colorizer.Red))
+
+	// Bright foreground and background colors
+	fmt.Println(colorizer.Paint(
+		"Bright info!",
+		colorizer.BrightCyan,
+		colorizer.BgBrightBlack,
+	))
 
 	// Multiple styles
 	fmt.Println(colorizer.Paint("Warning!", 
